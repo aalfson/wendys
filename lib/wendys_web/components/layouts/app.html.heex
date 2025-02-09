@@ -10,6 +10,32 @@
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">Sir, This is a Wendy's</h1>
           </div>
         </div>
+
+
+        <div class="flex" style="align-items: center">
+          <form phx-change="noop" phx-submit="noop" class="hidden">
+            <.live_file_input upload={@uploads.audio} />
+          </form>
+          <div id="mic-element" class="flex h-10 w-10 rounded-full bg-gray-700 p-2" phx-hook="Demo" style="align-items: center">
+            <div :if={@task} class="h-full w-full bg-white rounded-full ring-2 ring-white animate-spin border-4 border-solid border-blue-500 border-t-transparent" ></div>
+            <button
+              :if={!@task && !@recording}
+              class="h-full w-full bg-red-500 rounded-full ring-2 ring-white"
+              type="button"
+              phx-click="start"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+            </button>
+            <button
+              :if={!@task && @recording}
+              class="h-full w-full bg-red-500 rounded-full ring-2 ring-white animate-pulse"
+              type="button"
+              phx-click="stop"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
