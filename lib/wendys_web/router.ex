@@ -17,7 +17,7 @@ defmodule WendysWeb.Router do
   scope "/", WendysWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", MenuLive
   end
 
   # Other scopes may use custom stacks.
