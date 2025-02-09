@@ -35,3 +35,5 @@ wendys-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore audio uploads
+/priv/static/uploads

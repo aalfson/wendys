@@ -16,7 +16,8 @@ defmodule Wendys.Application do
       # Start a worker by calling: Wendys.Worker.start_link(arg)
       # {Wendys.Worker, arg},
       # Start to serve requests, typically the last entry
-      WendysWeb.Endpoint
+      WendysWeb.Endpoint,
+      {Wendys.Transcription.Supervisor, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
