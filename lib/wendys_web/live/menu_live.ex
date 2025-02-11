@@ -127,7 +127,6 @@ defmodule WendysWeb.MenuLive do
   end
 
   def human_readable_order_item(%OrderItem{} = item) do
-    IO.inspect(item)
     menu_item = Enum.find(Menu.get_menu_items(), &(&1.id == item.menu_item_id))
     "Item: #{menu_item.name}, quantity: #{item.quantity}"
   end
