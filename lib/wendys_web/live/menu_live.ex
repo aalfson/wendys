@@ -8,6 +8,8 @@ defmodule WendysWeb.MenuLive do
   """
   use WendysWeb, :live_view
 
+  alias Wendys.Menu.MenuItem
+
   require Logger
 
   @impl true
@@ -16,6 +18,7 @@ defmodule WendysWeb.MenuLive do
 
     {:ok,
      socket
+     |> assign(:menu_items, menu_items())
      |> assign(audio: nil, recording: false, task: nil)
      |> allow_upload(:audio, accept: :any, progress: &handle_progress/3, auto_upload: true)
      |> stream(:segments, [], dom_id: &"ss-#{&1.ss}")}
@@ -123,6 +126,14 @@ defmodule WendysWeb.MenuLive do
       {:error, :eacces} ->
         raise "Missing search or write permissions for the parent directories of path"
     end
+  end
+
+  def menu_items do
+    [
+      %MenuItem{id: 1, name: "Dave's Single", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2024-03/2024_DELIVERECT_Dave%27s%20Single_One%20Cheese_0.png?itok=1Q6EH2zs"},
+      %MenuItem{id: 2, name: "Medium French Fry", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2021-05/fries-medium-22_medium_US_en.png?itok=dmgwkN1f"},
+      %MenuItem{id: 3, name: "Small Frosty", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2021-05/jr-chocolate-frosty-37_medium_US_en.png?itok=Ea5g2v80"}
+    ]
   end
 
 end
