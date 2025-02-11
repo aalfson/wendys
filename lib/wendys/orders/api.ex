@@ -6,6 +6,8 @@ defmodule Wendys.Orders.API do
   order into one or more menu items.
   """
   def create_order_items(text) do
+    IO.inspect(text, label: "CREATE ORDER ITEMS INPUT TEXT")
+
     Instructor.chat_completion(
       model: "qwen2.5:7b",
       mode: :json,

@@ -1,18 +1,13 @@
 # Wendys
 
-To start your Phoenix server:
+Sir, this is a Wendys.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Requires running ollama w/ qwen2.5:7b.
+`ollama pull qwen2.5:7b`
+`ollama run qwen2.5:7b`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+This works by using Nx, Bumblebee, and an openAI whisper model to convert speech to text.
+It then uses the gerated text and Instructor, Ollama, and the qwen2.5:7b model to map
+predefined menu items into a set of order items.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Demo Video: https://vimeo.com/1055635853
