@@ -58,7 +58,8 @@ defmodule Wendys.MixProject do
       {:mp3_duration, "~> 0.1.0"},
       {:bumblebee, "~> 0.3.0"},
       {:exla, "~> 0.5.2"},
-      {:nx, "~> 0.5.3"}
+      {:nx, "~> 0.5.3"},
+      {:instructor, "~> 0.1.0"}
     ]
   end
 

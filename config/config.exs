@@ -10,6 +10,10 @@ import Config
 config :wendys,
   generators: [timestamp_type: :utc_datetime]
 
+config :instructor,
+  adapter: Instructor.Adapters.Ollama
+
+
 # Configures the endpoint
 config :wendys, WendysWeb.Endpoint,
   url: [host: "localhost"],

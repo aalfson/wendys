@@ -1,12 +1,9 @@
 defmodule Wendys.Orders.Order do
-  defstruct ~w(number items)a
+  use Ecto.Schema
 
-  @max_num 1_000_000_000
-
-  def new do
-    %__MODULE__{
-      number: :rand.uniform(@max_num),
-      items: []
-    }
+  @primary_key false
+  embedded_schema do
+    field :number, :integer
+    field :items, {:array, :map}
   end
 end

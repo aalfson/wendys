@@ -5,10 +5,13 @@ defmodule WendysWeb.MenuLive do
   I borrowed pretty heavily from the following repos:
   https://github.com/fly-apps/live_beats
   https://github.com/toranb/liveview-transcription-example
+  https://github.com/thmsmlr/instructor_ex/blob/main/pages/llm-providers/ollama.livemd
   """
   use WendysWeb, :live_view
 
-  alias Wendys.Menu.MenuItem
+  alias Wendys.Menu.API, as: Menu
+  alias Wendys.Orders.API, as: Orders
+  alias Wendys.Orders.Item, as: OrderItem
 
   require Logger
 
@@ -18,42 +21,38 @@ defmodule WendysWeb.MenuLive do
 
     {:ok,
      socket
-     |> assign(:menu_items, menu_items())
+     |> assign(:menu_items, Menu.get_menu_items())
      |> assign(audio: nil, recording: false, task: nil)
      |> allow_upload(:audio, accept: :any, progress: &handle_progress/3, auto_upload: true)
-     |> stream(:segments, [], dom_id: &"ss-#{&1.ss}")}
+     |> stream(:segments, [], dom_id: &"ss-#{&1.order_item.position}")}
   end
 
   @impl true
   def handle_event("start", _value, socket) do
-    IO.inspect "--------------------> Handling START event"
     socket = socket |> push_event("start", %{})
     {:noreply, assign(socket, recording: true)}
   end
 
   @impl true
   def handle_event("stop", _value, %{assigns: %{recording: recording}} = socket) do
-    IO.inspect "--------------------> Handling STOP event"
     socket = if recording, do: socket |> push_event("stop", %{}), else: socket
     {:noreply, assign(socket, recording: false)}
   end
 
   @impl true
   def handle_event("noop", %{}, socket) do
-    IO.inspect "--------------------> Handling NOOP event"
     # We need phx-change and phx-submit on the form for live uploads
     {:noreply, socket}
   end
 
   @impl true
   def handle_info({ref, results}, socket) when socket.assigns.task.ref == ref do
-    IO.inspect "--------------------> Handling INFO 1 event"
     socket = socket |> assign(task: nil)
 
     socket =
       results
-      |> Enum.reduce(socket, fn {_duration, ss, text}, socket ->
-        socket |> stream_insert(:segments, %{ss: ss, text: text})
+      |> Enum.reduce(socket, fn %OrderItem{} = order_item, socket ->
+        socket |> stream_insert(:segments, %{order_item: order_item})
       end)
 
     {:noreply, socket}
@@ -61,12 +60,10 @@ defmodule WendysWeb.MenuLive do
 
   @impl true
   def handle_info(_, socket) do
-    IO.inspect "--------------------> Handling INFO 2 event"
     {:noreply, socket}
   end
 
   def handle_progress(:audio, entry, socket) when entry.done? do
-    IO.inspect "--------------------> Handling PROGRESS event"
     path =
       consume_uploaded_entry(socket, entry, fn upload ->
         dest = Path.join(["priv", "static", "uploads", Path.basename(upload.path)])
@@ -77,8 +74,9 @@ defmodule WendysWeb.MenuLive do
     {:ok, %{duration: duration}} = Mp3Duration.parse(path)
 
     task =
-      speech_to_text(duration, path, 20, fn ss, text ->
-        {duration, ss, text}
+      speech_to_text(duration, path, 20, fn _ss, text ->
+        {:ok, %OrderItem{} = item} = Orders.create_order_items(text)
+        item
       end)
 
     {:noreply, assign(socket, task: task)}
@@ -128,12 +126,8 @@ defmodule WendysWeb.MenuLive do
     end
   end
 
-  def menu_items do
-    [
-      %MenuItem{id: 1, name: "Dave's Single", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2024-03/2024_DELIVERECT_Dave%27s%20Single_One%20Cheese_0.png?itok=1Q6EH2zs"},
-      %MenuItem{id: 2, name: "Medium French Fry", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2021-05/fries-medium-22_medium_US_en.png?itok=dmgwkN1f"},
-      %MenuItem{id: 3, name: "Small Frosty", image_url: "https://www.wendys.com/sites/default/files/styles/max_650x650/public/2021-05/jr-chocolate-frosty-37_medium_US_en.png?itok=Ea5g2v80"}
-    ]
+  def human_readable_order_item(%OrderItem{} = item) do
+    menu_item = Enum.find(Menu.get_menu_items(), &(&1.id == item.menu_item_id))
+    "Item: #{menu_item.name}, quantity: #{item.quantity}"
   end
-
 end
