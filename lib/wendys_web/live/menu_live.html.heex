@@ -26,12 +26,12 @@
       <div class="px-4 py-5 sm:p-6">
         <h3 class="text-base font-semibold text-gray-900">Order</h3>
         <div class="mt-2 max-w-xl text-sm text-gray-500">
-          <div id="transcript" phx-update="stream" class="pt-4">
+          <div id="transcript" class="pt-4">
             <div
-              :for={{id, order_item} <- @streams.segments}
+              :for={{id, order_item} <- @order_items}
               id={id}
               class="flex w-full justify-center items-center text-blue-400 font-bold">
-              <%= human_readable_order_item(order_item.order_item) %>
+              <%= human_readable_order_item(order_item) %>
             </div>
           </div>
         </div>

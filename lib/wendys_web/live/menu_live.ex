@@ -23,9 +23,9 @@ defmodule WendysWeb.MenuLive do
     {:ok,
      socket
      |> assign(:menu_items, Menu.get_menu_items())
+     |> assign(:order_items, [])
      |> assign(audio: nil, recording: false, task: nil)
-     |> allow_upload(:audio, accept: :any, progress: &handle_progress/3, auto_upload: true)
-     |> stream(:segments, [], dom_id: &"ss-#{&1.order_item.position}")}
+     |> allow_upload(:audio, accept: :any, progress: &handle_progress/3, auto_upload: true)}
   end
 
   @impl true
@@ -49,14 +49,14 @@ defmodule WendysWeb.MenuLive do
   @impl true
   def handle_info({ref, results}, socket) when socket.assigns.task.ref == ref do
     socket = socket |> assign(task: nil)
-
-    socket =
-      results
-      |> Enum.reduce(socket, fn %OrderItem{} = order_item, socket ->
-        socket |> stream_insert(:segments, %{order_item: order_item})
+    results = List.flatten(results)
+    
+    order_items = 
+      Enum.map(results, fn(%OrderItem{} = order_item) -> 
+        {"item-#{order_item.position}", order_item}
       end)
 
-    {:noreply, socket}
+    {:noreply, assign(socket, :order_items, order_items)}
   end
 
   @impl true
