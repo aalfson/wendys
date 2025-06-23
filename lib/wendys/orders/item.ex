@@ -4,6 +4,12 @@ defmodule Wendys.Orders.Item do
 
   import Ecto.Changeset
 
+  @type t() :: %__MODULE__{
+          position: non_neg_integer(),
+          quantity: non_neg_integer(),
+          menu_item_id: non_neg_integer()
+        }
+
   @llm_doc """
   ## Field Descriptions:
   - position: A unique integer 0 >= x < 100 that is used to create a monotonic ordering of a set of Wendys.Orders.Item that are each associated with the same Wendys.Orders.Order.
@@ -26,4 +32,6 @@ defmodule Wendys.Orders.Item do
     |> validate_inclusion(:position, 0..99)
     |> validate_inclusion(:menu_item_id, 0..2)
   end
+
+  def type, do: __MODULE__.t()
 end

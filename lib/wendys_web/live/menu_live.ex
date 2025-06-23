@@ -12,6 +12,7 @@ defmodule WendysWeb.MenuLive do
   alias Wendys.Menu.API, as: Menu
   alias Wendys.Orders.API, as: Orders
   alias Wendys.Orders.Item, as: OrderItem
+  alias Wendys.Orders.Order
 
   require Logger
 
@@ -75,8 +76,13 @@ defmodule WendysWeb.MenuLive do
 
     task =
       speech_to_text(duration, path, 20, fn _ss, text ->
-        {:ok, %OrderItem{} = item} = Orders.create_order_items(text)
-        item
+        items =
+          text
+          |> Orders.create_order_items()
+          |> Enum.map(fn({:ok, item}) -> item end)
+
+        IO.inspect(items)
+        items
       end)
 
     {:noreply, assign(socket, task: task)}

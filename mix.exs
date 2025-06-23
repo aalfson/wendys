@@ -59,7 +59,8 @@ defmodule Wendys.MixProject do
       {:bumblebee, "~> 0.3.0"},
       {:exla, "~> 0.5.2"},
       {:nx, "~> 0.5.3"},
-      {:instructor, "~> 0.1.0"}
+      {:instructor, "~> 0.1.0"},
+      {:typed_ecto_schema, "~> 0.4.1"}
     ]
   end
 
